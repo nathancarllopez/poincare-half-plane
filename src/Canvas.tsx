@@ -3,6 +3,14 @@ import { useState, useRef, useEffect } from 'react';
 export default function Canvas() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
+  /**
+   * Question:
+   * Here I want to initialize the canvas' dimensions based on the window dimensions.
+   * My motivation to separate it was that none of the drawings should depend on the window dimensions.
+   * Moreover, if I want this to work on mobile devices I suspect that this might be a good place to put code
+   * that changes the layout based on whether you're on a mobile device or not. Does that make sense?
+   * Should this be in its own component?
+   */
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -11,6 +19,12 @@ export default function Canvas() {
     canvas.height = window.innerHeight;
   }, []);
 
+  /**
+   * Question:
+   * Each of the shapes I'm drawing is right now an object with a "type" (a string) and some other properties (consisting of numbers or other shape objects).
+   * How do I get typescript to chill out about the way these objects are structured? The type declaration on the line that I define the shapes state, and I'm also getting a big complaint from VS Code when I call setShapes in the addLineWithClick function.
+   * Should I define a "Shapes" class and have each shape be an instance of that class? Or is there a different way that Typescript handles this?
+   */
   const startingShapes = [
     { type: 'axis', start: { x: 0, y: window.innerHeight * 0.95 }, end: { x: window.innerWidth, y: window.innerHeight * 0.95 } },
     { type: 'axis', start: { x: window.innerWidth / 2, y: 0 }, end: { x: window.innerWidth / 2, y: window.innerHeight * 0.95 } },
@@ -36,10 +50,6 @@ export default function Canvas() {
           drawPoint(context, shape);
           break;
         }
-        // case 'line': {
-        //   drawLine(context, shape);
-        //   break;
-        // }
         case 'geodesicCircle':
         case 'geodesicVertical': {
           drawGeodesic(context, shape);
@@ -59,6 +69,10 @@ export default function Canvas() {
     drawShapes(context);
   }, [shapes]);
 
+  /**
+   * Question:
+   * I've defined this function and the next one inside the component for now for simplicitiy, but I think they ought to be passed as props from a parent component. This is because clicking and mouse moving will be used for other things in the future, i.e., they will be one of a few options that are selected by the user with a Toolbar component (that I have yet to write). Then I'll need some parent component to keep track of which tool is selected and pass the appropriate function to this component based on what the user has done. Does that make sense?
+   */
   function displayCursorCoordinates(event: React.MouseEvent<HTMLCanvasElement>) {
     const canvas = canvasRef.current;
     if (!canvas) return;
