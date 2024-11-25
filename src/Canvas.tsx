@@ -59,6 +59,10 @@ export default function Canvas() {
     });
   }
 
+  /**
+   * Question:
+   * Does this useEffect hook make sense? I'm thinking that I want to redraw the canvas every time the shapes state changes. Is this the right way to do that? The React docs advise against using useEffect if you don't need it, so I want to make sure that I'm not doing something that's unnecessary. For example, couldn't I just call the drawShapes function whenever I call setShapes? That would be more direct, but I'm not sure if that's the "React" way to do it.
+   */
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
