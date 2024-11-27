@@ -1,14 +1,27 @@
-import './App.css'
-import Canvas from './Canvas.tsx'
-
-/**
- * Question:
- * For this file and for main.tsx: am I supposed to just keep these as bare bones as possible?
- * That is, should I avoid putting any logic in these files and instead put all logic in other files that I create? I'm thinking that I should keep these files as simple as possible and just use them to render the main component of the app, but maybe App is supposed to be the "master parent" component that holds all the state and logic for the app. I'm not sure what the standard practice is here.
- */
+import './App.css';
+import { useState } from 'react';
+import Canvas from './Canvas.tsx';
+import Toolbar from './Toolbar.tsx';
+import ToolbarConfig from './ToolbarConfig';
 
 function App() {
-  return <Canvas />
+  const [toolbarConfig, setToolbarConfig] = useState<ToolbarConfig>(new ToolbarConfig());
+
+  function handleToolbarChange(event: React.ChangeEvent<HTMLInputElement>) {
+    const toolbar = event.currentTarget.closest('.toolbar');
+    if (!toolbar) return;
+
+    const configCopy = new ToolbarConfig(toolbar);
+    setToolbarConfig(configCopy);
+  }
+
+  return (
+    <div className="appContainer">
+      {/* Infobar component goes here */}
+      <Canvas toolbarConfig={toolbarConfig} />
+      <Toolbar onToolbarChange={handleToolbarChange} />
+    </div>
+  )
 }
 
 export default App
