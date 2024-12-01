@@ -14,7 +14,17 @@ export default function Canvas({ toolbarConfig }: { toolbarConfig: ToolbarConfig
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
 
-    // window.resize event listener goes here
+    window.addEventListener('resize', () => {
+      console.log('resize');
+
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+
+      const context = canvas.getContext('2d');
+      if (!context) return;
+
+      drawAll(context);
+    });
   }, []);
 
   const leftInfinity = new Point(undefined, undefined, 0, window.innerHeight * 0.95);
